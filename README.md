@@ -36,7 +36,7 @@
 - `testbdt.py` : test and show performance
 
 # Warning
-- We have to add a branch in the root file to tell the algorithm which events are used for training or testing. In the current example, this branch is "`trainflag`". It is generally randomly and unformed from 0 to 1. Events with "trainflag<0.5" are used for training while the others used for testing. I will try to split the events automatically in the future.
+- We have to add a branch in the root file to tell the algorithm which events are used for training or testing. In the current example, this branch is "`trainflag`". It is generally randomly and uniformly from 0 to 1. Events with "`trainflag<0.5`" are used for training while the other events used for testing. I will try to split the events automatically in the future.
 
 # To-do
 - Add a function to split events for training and testing automatically.
