@@ -1,8 +1,9 @@
 # QBDT
-a new Boosting Decision Tree method with Systematical Uncertainties into training for High Energy Physics
+- a new Boosting Decision Tree method with Systematical Uncertainties into training for High Energy Physics
+- reference: https://arxiv.org/abs/1810.08387
 
-# Reference
-see https://arxiv.org/abs/1810.08387
+# Contact
+- Ligang Xia, ligang.xia@cern.ch, xialigang.china@qq.com
 
 # Example 
 An example in High Energy Physics, Higgs -> tau tau gamma, under the directory tautaugamma
@@ -13,7 +14,7 @@ An example in High Energy Physics, Higgs -> tau tau gamma, under the directory t
 - testbdt.py : test and show performance
 
 # First try without systematics:
-- run training: python runbdt.py trees0 0 0 10
+- run training: *python runbdt.py trees0 0 0 10*
 - run testing: python testbdt.py trees0 
 - I put the training and testing results in trees0/example/. You can have a comparison.
 
