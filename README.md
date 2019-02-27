@@ -8,13 +8,13 @@
 
 # First try without systematics:
 - run trainin: `python runbdt.py trees0 0 0 10`
-- run testing: `python testbdt.py trees0` 
+- run testing: `python testbdt.py trees0` (after training is done) 
 - I put the training and testing results in trees0/example/. You can have a comparison.
 
 
 # First try with ONE systematic source:
 - run training: `python runbdt.py trees1 1 1 10`
-- run testing: `python testbdt.py trees1 1`
+- run testing: `python testbdt.py trees1 1` (after training is done)
 - I put the training and testing results in trees1/example/. You can have a comparison.
 
 # How to run training?
