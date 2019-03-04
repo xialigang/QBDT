@@ -2,7 +2,7 @@
 - a new Boosting Decision Tree method with Systematical Uncertainties into training for High Energy Physics
 - reference: https://arxiv.org/abs/1810.08387
 - An example in High Energy Physics, search for Higgs -> tau tau gamma, under the directory **tautaugamma**
-- To use it, just git clone. No complie. Only pythin and ROOT are required.
+- To use it, just git clone. No complie. Only python and ROOT are required.
 
 # Contact
 - Ligang Xia, ligang.xia@cern.ch, xialigang.china@qq.com
