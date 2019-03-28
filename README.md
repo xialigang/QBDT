@@ -1,6 +1,6 @@
 # QBDT
 - a new Boosting Decision Tree method with Systematical Uncertainties into training for High Energy Physics
-- reference: https://arxiv.org/abs/1810.08387
+- reference: https://arxiv.org/abs/1810.08387 (accepted for publication in NIM A)
 - An example in High Energy Physics, search for Higgs -> tau tau gamma, under the directory **tautaugamma**
 - To use it, just git clone. No complie. Only python and ROOT are required.
 
