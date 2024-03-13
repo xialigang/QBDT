@@ -60,30 +60,30 @@ class qbdtmodule(object):
     def load_files(self, test=0):
         self.test = test
         if self.treename == '':
-            print 'treename is not specified!!!'
+            print('treename is not specified!!!')
             return
         self.sigchain = TChain(self.treename)
         for sig in self.signals:
-            print 'loading signal', self.signals[sig][0], 'file', self.signals[sig][1]
+            print('loading signal', self.signals[sig][0], 'file', self.signals[sig][1])
             if not os.path.isfile(self.signals[sig][1]):
-                print self.signals[sig][1],'is not a file!!!'
+                print(self.signals[sig][1],'is not a file!!!')
                 continue
             filename = self.signals[sig][1]
-            print 'filename =', filename
+            print('filename =', filename)
             filename = filename[filename.find('/')+1:]
-            print 'filename =', filename
+            print('filename =', filename)
             if not os.path.isfile(self.treedir+'/'+filename):
                 shutil.copyfile(self.signals[sig][1], self.treedir+'/'+filename)
             if test:
                 self.sigchain.Add(self.signals[sig][1])
             else:
                 self.sigchain.Add(self.treedir+'/'+filename)
-        print 'signal total entries :', self.sigchain.GetEntries()
+        print('signal total entries :', self.sigchain.GetEntries())
         self.bkgchain = TChain(self.treename)
         for bkg in self.backgrounds:
-            print 'loading background', self.backgrounds[bkg][0], 'file', self.backgrounds[bkg][1]
+            print('loading background', self.backgrounds[bkg][0], 'file', self.backgrounds[bkg][1])
             if not os.path.isfile(self.backgrounds[bkg][1]):
-                print self.backgrounds[bkg][1],'is not a file!!!'
+                print(self.backgrounds[bkg][1],'is not a file!!!')
                 continue
             filename = self.backgrounds[bkg][1]
             filename = filename[filename.find('/')+1:]
@@ -93,8 +93,8 @@ class qbdtmodule(object):
                 self.bkgchain.Add(self.backgrounds[bkg][1])
             else:
                 self.bkgchain.Add(self.treedir+'/'+filename)
-        print 'background total entries :', self.bkgchain.GetEntries()
-        print 'now we load background systemaitc files'
+        print('background total entries :', self.bkgchain.GetEntries())
+        print('now we load background systemaitc files')
         #NOTE: Here below I only consider one background. In the future, we may combine all backgrounds into one for convenience.
         for syst in self.bkgsysts:
             treename = self.bkgsysts[syst][1]
@@ -103,16 +103,16 @@ class qbdtmodule(object):
             filepath = self.bkgsysts[syst][4]
             bkgchain = TChain(treename)
             rootfilepath = filepath + '/' + filename
-            print 'loading syst', syst, 'for background', sample,' with file', filepath,'/', filename
+            print('loading syst', syst, 'for background', sample,' with file', filepath,'/', filename)
             if not os.path.isfile(rootfilepath):
-                print rootfilepath, 'is not a file!!!'
+                print(rootfilepath, 'is not a file!!!')
                 continue
             if not os.path.isfile(self.treedir+'/'+filename):
                 shutil.copyfile(rootfilepath, self.treedir+'/'+filename)
             bkgchain.Add(self.treedir+'/'+filename)
             self.bkgchainsysts[syst] = bkgchain
-            print 'systematics', syst, 'background total entries :', self.bkgchainsysts[syst].GetEntries()
-        print 'load_files DONE!!!'
+            print('systematics', syst, 'background total entries :', self.bkgchainsysts[syst].GetEntries())
+        print('load_files DONE!!!')
     def get_hist(self, s, varname, cut):
         chaintag = 'signal'
         histopt = self.variables[varname][3]
@@ -160,7 +160,7 @@ class qbdtmodule(object):
         elif tag == 'bkg' and syst != 'nominal':
             samplechain = self.bkgchainsysts[syst]
         else:
-            print tag,'with', syst, 'is not found!!!'
+            print(tag,'with', syst, 'is not found!!!')
             return
         #print samplechain, samplechain.GetName()
         if len(self.lasttree) == 0:
@@ -316,15 +316,15 @@ class qbdtmodule(object):
         nbins = hsig.GetNbinsX()
         show_bins = 0
         if show_bins:
-            print 'cut =', cut
-            print 'var =', var
+            print('cut =', cut)
+            print('var =', var)
             for i in range(nbins):
-                print 'bin', i+1, hsig.GetBinLowEdge(i+1), hsig.GetBinContent(i+1), hbkg.GetBinContent(i+1)
+                print('bin', i+1, hsig.GetBinLowEdge(i+1), hsig.GetBinContent(i+1), hbkg.GetBinContent(i+1))
         Ns = hsig.Integral()
         Nb = hbkg.Integral()
         #print 'for cut',cut,'Ns =',Ns, 'Nb =', Nb
         if Ns==0 and Nb==0:
-            print 'var =',var, 'for cut', cut,' no sig/bkg events!!!'
+            print('var =',var, 'for cut', cut,' no sig/bkg events!!!')
         purity = Ns/(Ns + Nb + pow(dNb,2))
         #Q0 = (Ns+Nb)*purity*(1-purity)
         Q0,Q1 = self.calQ(Ns, Nb, dNb)
@@ -377,11 +377,11 @@ class qbdtmodule(object):
     def show_bestsplit(self):
         for var in self.variables:
             self.get_bestsplit(var, '')
-            print var, self.bestsplit[var]
+            print(var, self.bestsplit[var])
     def get_prenode(self, cut):
         var = self.get_bestsplit_var(cut, 0)
         if var == 'error':
-            print 'var =', var,' !!!'
+            print('var =', var,' !!!')
             #return ['', 'error', '', 0, -1, -1, -1, -1]
             for var0 in self.variables:
                 var = var0
@@ -426,11 +426,11 @@ class qbdtmodule(object):
         if Nprenode == 0:
             prenode = self.get_prenode(cut)
             if prenode[1] == 'error':
-                print 'prenode[1] = error'
+                print('prenode[1] = error')
                 return
         else:
             if iprenode < 0:
-                print 'ERROR for iprenode =', iprenode
+                print('ERROR for iprenode =', iprenode)
                 return
             prenode = self.pretree[iprenode]
         #print 'prenode =', prenode
@@ -454,11 +454,11 @@ class qbdtmodule(object):
         if prenode in self.pretree:
             self.pretree.remove(prenode)
         if 0:
-            print 'self.node =', self.node
-            print 'var =',var
-            print 'dQmax =', dQmax
-            print 'Q =', Q
-            print 'purity =', purity
+            print('self.node =', self.node)
+            print('var =',var)
+            print('dQmax =', dQmax)
+            print('Q =', Q)
+            print('purity =', purity)
         #if dQmax < self.mindQ or Q<0 or Q==0 or self.node > self.maxnode or samecut:
         dQmaxcut = 0
         if dQmax < self.mindQ:
@@ -481,7 +481,7 @@ class qbdtmodule(object):
         #print 'to find the next split....'
         Nprenode = len(self.pretree)
         if Nprenode == 0:
-            print 'No prenode, finish tree splitting...'
+            print('No prenode, finish tree splitting...')
             return
         #print 'Nprenode =', Nprenode
         #print 'self.pretree =',self.pretree
@@ -536,7 +536,7 @@ class qbdtmodule(object):
               i += 1
            else:
               break
-        print 'istart =', istart
+        print('istart =', istart)
         if istart < 0:
             return
         self.istart = istart
@@ -551,7 +551,7 @@ class qbdtmodule(object):
                     break
                 line0 = line0.strip()
                 line = self.turn_to_list(line0)
-                print line
+                print(line)
                 self.lasttree.append(line)
     def build_trees(self):
         self.lasttree = []
@@ -562,7 +562,7 @@ class qbdtmodule(object):
         for i in range(self.istart + 1):
             self.load_tree(i)
             if self.lasttree in self.oldtrees:
-                print 'i =', i
+                print('i =', i)
                 os.remove(self.treedir+'/tree_'+str(i)+'.txt')
             else:
                 self.oldtrees.append(self.lasttree)
@@ -571,7 +571,7 @@ class qbdtmodule(object):
         self.initial_weight_s = 1.0
         self.initial_weight_b = 1.0
         for i in range(self.maxtree):
-            print '\n building tree', i
+            print('\n building tree', i)
             if i <= self.istart:
                 continue
             cut = '%s<%s' % (self.trainflagvar, str(self.trainflagcut))
@@ -581,8 +581,8 @@ class qbdtmodule(object):
                 self.sigchain.Add(self.treedir+'/fhist_h2atata.root')
                 self.bkgchain = TChain(self.treename)
                 self.bkgchain.Add(self.treedir+'/fhist_atata.root')
-                print 'sigchain entries=', self.sigchain.GetEntries()
-                print 'bkgchain entries=', self.bkgchain.GetEntries()
+                print('sigchain entries=', self.sigchain.GetEntries())
+                print('bkgchain entries=', self.bkgchain.GetEntries())
                 self.bkgchainsyst = {}
                 for syst in self.bkgsysts:
                     if not self.syston:
@@ -593,12 +593,12 @@ class qbdtmodule(object):
                     bkgchain = TChain(treename)
                     bkgchain.Add(self.treedir+'/'+filename)
                     self.bkgchainsysts[syst] = bkgchain
-                    print 'bkgchain entries=', bkgchain.GetEntries(), 'for syst', syst
+                    print('bkgchain entries=', bkgchain.GetEntries(), 'for syst', syst)
             if i == 0 or self.initial_weight_s == 1.0 or self.initial_weight_b == 1.0: #set initial weight
                 var = ''
                 for var in self.variables:
                     break
-                print 'to get initial weight, the variables is', var
+                print('to get initial weight, the variables is', var)
                 hsig = self.get_sigbkg_hist('sig', self.variables[var][0], cut)
                 hbkg = self.get_sigbkg_hist('bkg', self.variables[var][0], cut)
                 #print 'N(hsig) =',hsig.Integral()
@@ -664,28 +664,28 @@ class qbdtmodule(object):
                 node.append(self.tree_alpha)
             self.lasttree = self.tree
             if self.lasttree in self.oldtrees:
-                print 'SAME tree is built! stop...'
+                print('SAME tree is built! stop...')
                 break
             self.store_tree(i)
             self.itree += 1
             self.oldtrees.append(self.lasttree)
             if len(self.pretree)>0:
-                print 'ERROR in splitting tree',i
-                print 'Here is the self.pretree.'
+                print('ERROR in splitting tree',i)
+                print('Here is the self.pretree.')
                 for a in self.pretree:
-                    print a
+                    print(a)
                 return
             self.sigchain = None
             self.bkgchain = None
-            print 'now adding bdtweight as a branch to the signal ntuple'
+            print('now adding bdtweight as a branch to the signal ntuple')
             self.add_bdtweight2ntuple('fhist_h2atata.root', self.treename, 'sig', i, self.lasttree, sum_Q, weight_s, self.tree_alpha)
-            print 'now adding bdtweight as a branch to the background ntuple'
+            print('now adding bdtweight as a branch to the background ntuple')
             self.add_bdtweight2ntuple('fhist_atata.root', self.treename, 'bkg', i, self.lasttree, sum_Q, weight_b, self.tree_alpha)
-            print 'now adding bdtweight as a branch to the background systematics ntuples'
+            print('now adding bdtweight as a branch to the background systematics ntuples')
             if not self.syston:
                 continue
             for syst in self.bkgsysts:
-                print 'syst =',syst
+                print('syst =',syst)
                 treename = self.bkgsysts[syst][1]
                 self.add_bdtweight2ntuple('fhist_atata_syst_'+syst+'.root', treename, 'bkg', i, self.lasttree, sum_Q, weight_b, self.tree_alpha)
         return
@@ -739,7 +739,7 @@ class qbdtmodule(object):
                     break
                 inode += 1
             if flag !=1:
-                print 'tree',i,'is not complete with flag =', flag
+                print('tree',i,'is not complete with flag =', flag)
         #qq = 1.0 - qq
         #q = q/self.maxtree
         #q = 2./(1.+math.exp(-2*q)) - 1.
@@ -755,7 +755,7 @@ class qbdtmodule(object):
         if syst != 'nominal':
             bdtfilename += '_'+syst
         bdtfilename += '_'+str(self.maxtree)+'.root'
-        print 'We are producing test samples for', tag, syst
+        print('We are producing test samples for', tag, syst)
         file0 = TFile(bdtfilename, 'recreate')
         tree0 = TTree('bdt', '')
         trflag = array('f', [0])
@@ -770,7 +770,7 @@ class qbdtmodule(object):
             q = self.get_q(event)
             #print 'trainflag =', trainflag
             if ievent % 2000 == 0:
-                print ievent, 'q =',q, 'weight =', weight
+                print(ievent, 'q =',q, 'weight =', weight)
             #testflag = 1
             #if ievent > 8000 and testflag:
                 #break
@@ -825,7 +825,7 @@ class qbdtmodule(object):
         chain.Draw(var+'>>htest('+str(nbins)+','+str(xmin)+','+str(xmax)+')', 'fweight*('+traincut+')')
         hq_train = gROOT.FindObject('htrain')
         hq_test = gROOT.FindObject('htest')
-        print hq_train,hq_test
+        print(hq_train,hq_test)
         hq_train = self.getoverflow(hq_train)
         hq_test = self.getoverflow(hq_test)
         hq_train.SetName('hq_train_'+tag)
@@ -846,8 +846,8 @@ class qbdtmodule(object):
         g_roc = TGraph(len(sig_acc), sig_acc, bkg_sup)
         return g_roc
     def show_roc(self, hq_sig_train, hq_bkg_train, hq_sig_test, hq_bkg_test):
-        print 'hq_sig', hq_sig_train.Integral(), hq_sig_test.Integral()
-        print 'hq_bkg', hq_bkg_train.Integral(), hq_bkg_test.Integral()
+        print('hq_sig', hq_sig_train.Integral(), hq_sig_test.Integral())
+        print('hq_bkg', hq_bkg_train.Integral(), hq_bkg_test.Integral())
         g_roc_test = self.get_roc_graph(hq_sig_test, hq_bkg_test)
         g_roc_train = self.get_roc_graph(hq_sig_train, hq_bkg_train)
         Cs_roc = TCanvas('Cs_roc', '', 600, 600)
@@ -880,8 +880,8 @@ class qbdtmodule(object):
         #hq_bkg_train =  file0.Get('hq_train_bkg')
         #hq_sig_test =  file0.Get('hq_test_sig')
         #hq_bkg_test =  file0.Get('hq_test_bkg')
-        print 'hq_sig', hq_sig_train.Integral(), hq_sig_test.Integral()
-        print 'hq_bkg', hq_bkg_train.Integral(), hq_bkg_test.Integral()
+        print('hq_sig', hq_sig_train.Integral(), hq_sig_test.Integral())
+        print('hq_bkg', hq_bkg_train.Integral(), hq_bkg_test.Integral())
         Cs_q = TCanvas('Cs_q', '', 600, 600)
         if log:
             Cs_q.SetLogy()
@@ -997,8 +997,8 @@ class qbdtmodule(object):
             hq_bkg_test.Scale(1.0 / hq_bkg_test.Integral())
         Z_train = self.getZ(hq_sig_train, hq_bkg_train)
         Z_test = self.getZ(hq_sig_test, hq_bkg_test)
-        print 'Z_train =', Z_train
-        print 'Z_test =', Z_test
+        print('Z_train =', Z_train)
+        print('Z_test =', Z_test)
         self.show_q_hist(0, hq_sig_train, hq_bkg_train, hq_sig_test, hq_bkg_test)
         self.show_q_hist(1, hq_sig_train, hq_bkg_train, hq_sig_test, hq_bkg_test)
         self.show_roc( hq_sig_train, hq_bkg_train, hq_sig_test, hq_bkg_test)
@@ -1041,7 +1041,7 @@ class qbdtmodule(object):
                 purity = node[7]
                 if Q < 0:
                     if tag != 'sig':
-                        print 'Q =', Q, '<0 for ', tag, ' !!!!'
+                        print('Q =', Q, '<0 for ', tag, ' !!!!')
                 scoresign = 1
                 if purity < 0.5:
                     scoresign = -1
@@ -1056,7 +1056,7 @@ class qbdtmodule(object):
         ntuple.Write()
         file0.Close()
         del file0
-        print 'success in adding bdtweight branch!'
+        print('success in adding bdtweight branch!')
         return
 
 

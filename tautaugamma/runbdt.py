@@ -8,12 +8,12 @@ import sys
 
 #from array import array
 
-print 'sys.argv =', sys.argv
+print('sys.argv =', sys.argv)
 if len(sys.argv)<2:
-   print 'No specify the trees dir'
+   print('No specify the trees dir')
    sys.exit(1)
 if len(sys.argv)<3:
-   print 'Not specify the number of systematic sources'
+   print('Not specify the number of systematic sources')
    sys.exit(1)
 
 
@@ -23,19 +23,19 @@ Nsyst0 = int(sys.argv[2])
 # flag to switch on systematics or not into training
 syston0 = 0
 if len(sys.argv)<4:
-   print 'Not specify whether to turn on systematics or not'
-   print 'Do NOT consider systmatics by default'
+   print('Not specify whether to turn on systematics or not')
+   print('Do NOT consider systmatics by default')
 else:
    syston0 = int(sys.argv[3])
 
 if Nsyst0 == 0:
     syston0 = 0
 
-ntrees0 = 100
+ntrees0 = 3
 
 if len(sys.argv) < 5:
-   print 'Not specifying number of trees'
-   print 'Build 100 trees by default'
+   print('Not specifying number of trees')
+   print('Build 100 trees by default')
 else:
    ntrees0 = int(sys.argv[4])
 

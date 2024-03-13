@@ -9,16 +9,16 @@ import ROOT
 import sys
 
 if len(sys.argv)<2:
-   print 'Not specify the treedir'
+   print('Not specify the treedir')
    sys.exit(1)
 if len(sys.argv)<3:
-   print 'Not specify the number of systematics'
-   print 'Will NOT calculate QBDT score for systematic samples'
+   print('Not specify the number of systematics')
+   print('Will NOT calculate QBDT score for systematic samples')
 if len(sys.argv)<4:
-   print 'Not specify the number of trees'
-   print 'Use the mininum of 100 and the number of trees under directory of ', str(sys.argv[1])
+   print('Not specify the number of trees')
+   print('Use the mininum of 100 and the number of trees under directory of ', str(sys.argv[1]))
 
-print 'sys.argv =', sys.argv
+print('sys.argv =', sys.argv)
 treedir0 = str(sys.argv[1])
 
 Nsyst = 0
@@ -77,14 +77,14 @@ for a in list_files:
    if n >= bdt.maxtree:
       bdt.maxtree = n+1
 
-print 'bdt.maxtree =', bdt.maxtree
+print('bdt.maxtree =', bdt.maxtree)
 
 if bdt.maxtree < maxtree0:
-   print 'The number of trees', bdt.maxtree,'is <',maxtree0
+   print('The number of trees', bdt.maxtree,'is <',maxtree0)
 else:
    bdt.maxtree = maxtree0
 
-print 'bdt.maxtree =', bdt.maxtree
+print('bdt.maxtree =', bdt.maxtree)
 
 
 
