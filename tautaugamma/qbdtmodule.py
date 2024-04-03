@@ -9,6 +9,33 @@ from array import array
 import shutil
 import math
 
+def pass_cut(cut_val=0., cut_sign='==', _cut_val=1.):
+    if cut_sign == '<=' and _cut_val <= cut_val:
+        return True
+    elif cut_sign == '>=' and _cut_val >= cut_val:
+        return True
+    elif cut_sign == '>' and _cut_val > cut_val:
+        return True
+    elif cut_sign == '<' and _cut_val < cut_val:
+        return True
+    elif cut_sign == '==' and _cut_val == cut_val:
+        return True
+    else:
+        return False
+def ana_a_cut(acut):
+    list_cut_sign = ['<=', '>=', '<', '>', '=='] # this order is important
+    cut_sign = ''
+    cut_var = ''
+    cut_val = ''
+    for _cut_sign in list_cut_sign:
+        if _cut_sign in acut:
+            cut_sign = _cut_sign
+            break
+    acut = acut.split(cut_sign)
+    cut_var = acut[0].strip()
+    cut_val = acut[1].strip()
+    return cut_var, cut_sign, cut_val
+
 class qbdtmodule(object):
 
     def __init__(self):
@@ -721,11 +748,23 @@ class qbdtmodule(object):
                 nodecond = node[0].replace('&&', '&&event.')
                 #print 'type of nodecond is', type(nodecond)
                 #print 'nodecond =', nodecond
-                nodecond = nodecond.replace('&&', ' and ')
-                nodecond = nodecond.replace('%s<%s and' % (self.trainflagvar, str(self.trainflagcut)), '')
-                #print 'fallintonode = %s' % nodecond
-                exec('fallintonode = %s' % nodecond)
-
+                #nodecond = nodecond.replace('&&', ' and ')
+                #nodecond = nodecond.replace('%s<%s and' % (self.trainflagvar, str(self.trainflagcut)), '')
+                #print('fallintonode = %s' % nodecond)
+                #exec('fallintonode = %s' % nodecond)
+    
+                nodecond = node[0].replace('%s<%s&&' % (self.trainflagvar, str(self.trainflagcut)), '')
+                #print('nodecond =', nodecond)
+                #fallintonode =   event.m_lephadpho>76.66666666666666 and event.m_lephadpho<115.33333333333333 and event.pt_lep>49.0
+                #nodecond =  trainflag<0.5&&m_lephadpho>76.66666666666666&&m_lephadpho<115.33333333333333&&pt_lep>49.0
+                fallintonode = 1
+                _cuts = nodecond.split('&&')
+                for _acut in _cuts:
+                    cut_var,cut_sign,cut_val = ana_a_cut(_acut)
+                    _cut_val = getattr(event, cut_var)
+                    if not pass_cut(float(cut_val), cut_sign, _cut_val):
+                        fallintonode = 0
+                        break
                 if fallintonode:
                     flag += 1
                     #if nodecond in list_regions:
@@ -765,8 +804,13 @@ class qbdtmodule(object):
         tree0.Branch('qbdt', qbdt, 'qbdt/F')
         tree0.Branch('fweight', fweight, 'fweight/F')
         for event in chain:
-            exec('trainflag = %s.%s<%s' % ('event', self.trainflagvar, str(self.trainflagcut)))
-            exec('weight = %s.%s' %('event', self.weightvar))
+            #exec('trainflag = %s.%s<%s' % ('event', self.trainflagvar, str(self.trainflagcut)))
+            #exec('weight = %s.%s' %('event', self.weightvar))
+            trainflagvar = getattr(event, self.trainflagvar)
+            trainflag = 0
+            if trainflagvar < self.trainflagcut:
+                trainflag = 1
+            weight = getattr(event, self.weightvar)
             q = self.get_q(event)
             #print 'trainflag =', trainflag
             if ievent % 2000 == 0:
@@ -1014,9 +1058,14 @@ class qbdtmodule(object):
         Bbdtweight = ntuple.Branch('bdtweight'+str(iweight), bdtweight, 'bdtweight'+str(iweight)+'/F')
         Bqbdt = ntuple.Branch('qbdt'+str(iweight), qbdt, 'qbdt'+str(iweight)+'/F')
         for event in ntuple:
-            cuttrain = 'event.'+self.trainflagvar+'<'+str(self.trainflagcut)
-            exec('cutflag = %s' % cuttrain)
-            exec('weight = event.%s' % self.weightvar)
+            #cuttrain = 'event.'+self.trainflagvar+'<'+str(self.trainflagcut)
+            #exec('cutflag = %s' % cuttrain)
+            #exec('weight = event.%s' % self.weightvar)
+            trainflagvar = getattr(event, self.trainflagvar)
+            cutflag = 0
+            if trainflagvar < self.trainflagcut:
+                cutflag = 1
+            weight = getattr(event, self.weightvar)
             bdtweight[0] = 1.0
             qbdt[0] = 0.0
             if not cutflag:
@@ -1024,16 +1073,28 @@ class qbdtmodule(object):
                 Bqbdt.Fill()
                 continue
             if iweight>0:
-                exec('oldbdtweight = event.bdtweight%s' % str(iweight-1))
-                exec('oldqbdt = event.qbdt%s' % str(iweight-1))
-                bdtweight[0] = oldbdtweight
-                qbdt[0] = oldqbdt
+                #exec('oldbdtweight = event.bdtweight%s' % str(iweight-1))
+                #exec('oldqbdt = event.qbdt%s' % str(iweight-1))
+                #bdtweight[0] = oldbdtweight
+                #qbdt[0] = oldqbdt
+                bdtweight[0] = getattr(event, 'bdtweight'+str(iweight-1))
+                qbdt[0] = getattr(event, 'qbdt'+str(iweight-1))
             for node in lasttree:
                 cutnode = node[3]
-                cutnode = cutnode.replace(self.trainflagvar, 'event.'+self.trainflagvar)
-                cutnode = cutnode.replace('&&', '&&event.')
-                cutnode = cutnode.replace('&&', ' and ')
-                exec('cutflag = %s' % cutnode)
+                #print('debug ligang: cutnode =', cutnode)
+                #cutnode = cutnode.replace(self.trainflagvar, 'event.'+self.trainflagvar)
+                #cutnode = cutnode.replace('&&', '&&event.')
+                #cutnode = cutnode.replace('&&', ' and ')
+                #print('debug ligang: final cutnode =', cutnode)
+                #exec('cutflag = %s' % cutnode)
+                cutflag = 1
+                _cuts = cutnode.split('&&')
+                for _acut in _cuts:
+                    cut_var,cut_sign,cut_val = ana_a_cut(_acut)
+                    _cut_val = getattr(event, cut_var)
+                    if not pass_cut(float(cut_val), cut_sign, _cut_val):
+                        cutflag = 0
+                        break
                 if not cutflag:
                     continue
 
